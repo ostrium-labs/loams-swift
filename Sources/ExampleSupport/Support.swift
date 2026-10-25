@@ -9,7 +9,7 @@ public let exampleNamespace = "examples-swift"
 
 public func makeClient() throws -> (client: Loams, endpoint: URL) {
     let env = ProcessInfo.processInfo.environment
-    let endpoint = URL(string: env["LOAMS_ENDPOINT"] ?? "http://127.0.0.1:18080")!
+    let endpoint = URL(string: env["LOAMS_ENDPOINT"] ?? "http://127.0.0.1:8080")!
     let key = env["LOAMS_API_KEY"] ?? ""
     let client = try Loams(
         Options(
@@ -21,8 +21,8 @@ public func makeClient() throws -> (client: Loams, endpoint: URL) {
     return (client, endpoint)
 }
 
-/// A binding for an RPC the SDK facade has no module for yet. The call still goes
-/// through the SDK's invoker: auth, retries, error mapping.
+/// Demonstrate a dynamic RPC binding through the SDK invoker (auth, retries,
+/// error mapping). App modules also provide these calls directly.
 func binding(_ service: String, _ method: String, readOnly: Bool) -> CallBinding {
     let pkg = "loams.collection.v1"
     return CallBinding(
@@ -149,8 +149,7 @@ public func seed(_ collections: Collections, collection: String = "kb") async th
     try await collections.upsert(collection, docs: kbDocs)
 }
 
-/// Runs SQL over the namespace's collections. The SDK has no SQL module yet, so
-/// this posts to the engine's REST route directly.
+/// Demonstrates the native SQL HTTP route. The SDK also provides a SQL module.
 public func runSQL(endpoint: URL, query: String) async throws -> (columns: [String], rows: [[JSONValue]]) {
     var request = URLRequest(url: endpoint.appendingPathComponent("v1/namespaces/\(exampleNamespace)/sql"))
     request.httpMethod = "POST"
