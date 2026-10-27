@@ -1,7 +1,7 @@
 # loams-swift
 
-These examples target **Loams SDK 0.1.2**. Installation and CI require the matching
-0.1.2 packages and release tags to be published.
+These examples target the published **Loams SDK 0.1.2** release, resolved by
+Swift Package Manager from the `v0.1.2` Git tag.
 
 Example apps for the [Loams](https://github.com/ostrium-labs/loams) Swift SDK.
 
@@ -32,17 +32,17 @@ swift run sql                    # SQL over the collection
 swift run docsearch refund       # a small search CLI
 ```
 
-Set `LOAMS_ENDPOINT` (default `http://127.0.0.1:8080`) and, if the instance needs one, `LOAMS_API_KEY`. The examples only touch the namespace `examples-swift`.
+Set `LOAMS_ENDPOINT` to the instance base URL (for a local dev engine, `http://127.0.0.1:8080`) and, if the instance needs one, `LOAMS_API_KEY`. The SDK requires the endpoint variable. The examples only touch the namespace `examples-swift`.
 
 | Example | What it shows |
 |---|---|
-| [quickstart](quickstart) | connect, create a collection, upsert documents, hybrid search (vector + BM25 + filter, fused with RRF) |
-| [sql](sql) | SQL queries over the collection |
-| [app](app) | `docsearch`, a command-line search tool |
+| [quickstart](quickstart) | instance/system, namespaces, collections, documents, text/vector/hybrid search, optional graph, SDK SQL and streams |
+| [sql](sql) | SQL module: selects, parameters, aggregates and hybrid table functions |
+| [app](app) | `docsearch`, a CLI using the SDK search and vector builders/modules |
 
 ## What the SDK covers today
 
-The SDK provides namespaces, collections, documents, search, vector, graph, SQL and streams. `Sources/ExampleSupport` retains examples of dynamic collection RPCs through the SDK invoker and the native SQL HTTP route. SDK app modules can also make these calls directly; see the [Swift SDK](https://github.com/ostrium-labs/loams/tree/v0.1.2/sdks/swift).
+The examples use the published high-level app modules and builders throughout. `Sources/ExampleSupport` only creates the example client and seeds the sample collection through those modules; there are no direct `URLSession` SQL calls or hand-built collection RPC bindings. SDK Live and system modules remain part of the package; the quickstart demonstrates system and optional-feature discovery. See the [Swift SDK Notes example](https://github.com/ostrium-labs/loams/blob/v0.1.2/sdks/swift/Examples/Notes/Notes.swift) for the same signatures.
 
 ## Docs
 
