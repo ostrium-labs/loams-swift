@@ -1,7 +1,10 @@
 # sql
 
-Seeds `kb` and runs three SQL queries (count, group by, filtered select) against the `examples-swift` namespace. The SDK has no SQL module yet, so the example posts to the engine's REST route `/v1/namespaces/examples-swift/sql`.
+Runs SQL through the published `loams.sql` module (including bound parameters and the hybrid `rrf`, `vector_search`, and `text_search` table functions). It uses the shared SDK seed helper and does not call the HTTP SQL route directly.
+
+Seeds `kb` and runs SQL queries against the `examples-swift` namespace using the SDK module.
 
 ```sh
+export LOAMS_ENDPOINT=http://127.0.0.1:8080
 swift run sql
 ```

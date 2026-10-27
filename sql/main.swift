@@ -1,19 +1,18 @@
 import ExampleSupport
+import Foundation
+import Loams
 
-// SQL over a collection. Collections are tables in the namespace's SQL catalogue.
-let (client, endpoint) = try makeClient()
-try await seed(Collections(client))
-
+// SQL queries through the published loams.sql module. No raw URLSession calls.
+let loams = try makeClient()
+try await seed(loams)
 let queries = [
-    "SELECT count(*) AS n FROM kb",
-    "SELECT tenant, count(*) AS n FROM kb GROUP BY tenant ORDER BY tenant",
-    "SELECT body, tenant FROM kb WHERE tenant = 'a' ORDER BY body",
+    ("count", "SELECT count(*) AS n FROM kb", [JSONValue]()),
+    ("group by", "SELECT tenant, count(*) AS n FROM kb GROUP BY tenant ORDER BY tenant", [JSONValue]()),
+    ("bound value", "SELECT body, tenant FROM kb WHERE tenant = $1 ORDER BY body", [.string("a")]),
+    ("hybrid table functions", "SELECT body, _score FROM rrf(vector_search('kb', [1.0, 0.0, 0.0], 'embedding', 10), text_search('kb', 'refund', 'body', 10)) LIMIT 3", [JSONValue]()),
 ]
-for query in queries {
-    print("> \(query)")
-    let result = try await runSQL(endpoint: endpoint, query: query)
-    print("  \(result.columns.joined(separator: " | "))")
-    for row in result.rows {
-        print("  " + row.map { $0.stringValue ?? $0.intValue.map(String.init) ?? "\($0)" }.joined(separator: " | "))
-    }
+for (label, statement, params) in queries {
+    print("-- \(label): \(statement)")
+    let response = try await loams.sql.query(statement, params: params)
+    for row in SqlModule.records(response) { print("  \(row)") }
 }
